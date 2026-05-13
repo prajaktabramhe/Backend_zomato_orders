@@ -8,7 +8,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const connection = require('./connector')
 
-
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully!");
+});
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
