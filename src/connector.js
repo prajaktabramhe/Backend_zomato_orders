@@ -1,18 +1,28 @@
+require('dotenv').config();
 
-var mysql = require('mysql');
+const mysql = require('mysql2');
 
-var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "zomato",  
+const con = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
     multipleStatements: true
 });
 
+con.connect((err) => {
 
-con.connect(function (err) {
-    if (err) return console.log("failed to connect to mysql server/ database", err);
-    else return console.log("connection establish with Datebase!!!!");
+    if (err) {
+        console.log(
+            "failed to connect to mysql server/database",
+            err
+        );
+    } else {
+        console.log(
+            "connection established with Database!!!!"
+        );
+    }
 });
 
 module.exports = con;

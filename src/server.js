@@ -1,37 +1,62 @@
-const express = require("express");
-const con = require("./connector");
-
+const express = require('express');
 const app = express();
-const PORT = 8080;
+const bodyParser = require("body-parser");
 
+const port = process.env.PORT || 8080;
+
+// Parse JSON bodies
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+const connection = require('./connector');
+
+// Home Route
+app.get("/", (req, res) => {
+    res.send("Backend is running successfully!");
+});
+
+// Orders Route
 app.get("/api/orders", (req, res) => {
+
     let { limit, offset } = req.query;
 
-    // convert to number
-    limit = parseInt(limit);
-    offset = parseInt(offset);
+    // Convert query params into numbers
+    limit = Number(limit);
+    offset = Number(offset);
 
-    // validation
-    if (isNaN(limit) || limit <= 0) {
+    // Validate limit
+    if (
+        isNaN(limit) ||
+        !Number.isInteger(limit) ||
+        limit <= 0
+    ) {
         limit = 10;
     }
 
-    if (isNaN(offset) || offset < 0) {
+    // Validate offset
+    if (
+        isNaN(offset) ||
+        !Number.isInteger(offset) ||
+        offset < 0
+    ) {
         offset = 0;
     }
 
     const query = "SELECT * FROM orders LIMIT ? OFFSET ?";
 
-    con.query(query, [limit, offset], (err, result) => {
+    connection.query(query, [limit, offset], (err, result) => {
+
         if (err) {
             console.error(err);
-            return res.status(500).send("Server error");
+            return res.status(500).send("Server Error");
         }
 
-        res.status(200).json(result);
+        return res.status(200).json(result);
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`App listening on port ${port}!`);
 });
+
+module.exports = app;
