@@ -1,60 +1,43 @@
-let con = require('./connector')
-let data = require('./data')
+require('dotenv').config();
+const mysql = require('mysql2/promise');
 
-const run = async () => {
+async function run() {
     try {
-        // ✅ CREATE DATABASE FIRST
-        await new Promise((resolve, reject) => {
-            con.query('CREATE DATABASE IF NOT EXISTS zomato', (err) => {
-                if (err) reject(err)
-                else resolve()
-            })
-        })
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            port: process.env.DB_PORT,
+            multipleStatements: true
+        });
 
-        // ✅ USE DATABASE
-        await new Promise((resolve, reject) => {
-            con.query('USE zomato', (err) => {
-                if (err) reject(err)
-                else resolve()
-            })
-        })
-        await new Promise((resolve, reject) => {
-            con.query('DROP TABLE IF EXISTS orders', (err) => {
-                if (err) reject(err)
-                else resolve()
-            })
-        })
+        console.log("Connected to MySQL");
 
-        await new Promise((resolve, reject) => {
-            con.query(
-                'CREATE TABLE orders(_id varchar(200), title varchar(100), description varchar(1000))',
-                (err) => {
-                    if (err) reject(err)
-                    else resolve()
-                }
+        await connection.query("CREATE DATABASE IF NOT EXISTS zomato");
+        await connection.query("USE zomato");
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS orders (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                item_name VARCHAR(255),
+                price INT
             )
-        })
+        `);
 
-        for (let i = 0; i < data.length; i++) {
-            await new Promise((resolve, reject) => {
-                con.query(
-                    `INSERT INTO orders VALUES (?, ?, ?)`,
-                    [data[i]._id, data[i].title, data[i].description],
-                    (err) => {
-                        if (err) reject(err)
-                        else resolve()
-                    }
-                )
-            })
-        }
+        await connection.query(`
+            INSERT INTO orders (item_name, price)
+            VALUES 
+            ('Burger',120),
+            ('Pizza',300),
+            ('Pasta',200)
+        `);
 
-        console.log("Database setup complete ✅")
+        console.log("Database and table created successfully");
 
+        await connection.end();
     } catch (err) {
-        console.error(err)
-    } finally {
-        con.end()
+        console.log("Error:", err);
     }
 }
 
-run()
+run();
