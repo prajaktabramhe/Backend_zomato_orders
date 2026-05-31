@@ -1,160 +1,154 @@
-# 📦 Zomato Orders API (Pagination with MySQL)
+Backend Zomato Orders API
 
-## 📌 Overview
+A simple REST API built using Node.js, Express.js, and MySQL to manage Zomato-style food orders. The API supports fetching order data with pagination using limit and offset query parameters.
 
-This project is a Node.js + MySQL based backend application that demonstrates **pagination using LIMIT and OFFSET**.
-It simulates a restaurant order system where large datasets are handled efficiently.
+Repository: Backend_zomato_orders GitHub Repository
+Live API: Backend_zomato_orders Live API
 
----
+Features :
+---------
+Fetch food order details from MySQL database
+RESTful API architecture
+Pagination support using limit and offset
+Environment variable configuration with .env
+MySQL database integration
+Error handling and validation
+Ready for deployment on Render
 
-## 🚀 Features
+Tech Stack :
+-------------
+Backend: Node.js
+Framework: Express.js
+Database: MySQL
+Environment Management: dotenv
+Deployment: Render
 
-* REST API using Express.js
-* MySQL database integration
-* Pagination using `LIMIT` and `OFFSET`
-* Input validation for query parameters
-* Default fallback values for invalid inputs
+Project Structure :
+-----------------
+Backend_zomato_orders/
+│---node modules
+├── src/
+│   └── connector.js
+|   └── createDatabase.js
+|   └── data.js
+|   └── server.js
+|   └── index.js
+│
+├── .env
+├── package.json
+├── package-lock.json
+└── README.md
 
----
-
-## 🛠️ Tech Stack
-
-* Node.js
-* Express.js
-* MySQL
-
----
-
-## 📂 Project Setup
-
-### 1️⃣ Install dependencies
-
-```bash
+Installation :
+---------------
+1. Clone Repository
+git clone https://github.com/prajaktabramhe/Backend_zomato_orders.git
+cd Backend_zomato_orders
+2. Install Dependencies
 npm install
-```
+3. Configure Environment Variables
 
----
+Create a .env file:
 
-### 2️⃣ Configure database
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=zomato
+DB_PORT=3306
+PORT=5000
 
-Update your `connector.js` file:
+Database Setup : 
+--------------
+Create Database:
+CREATE DATABASE zomato;
+Select Database:
+USE zomato;
 
-```js
-host: "localhost",
-user: "root",
-password: "your_password",
-database: "zomato"
-```
+Create Orders Table:
+------------------
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_name VARCHAR(100),
+    item VARCHAR(100),
+    quantity INT,
+    price DECIMAL(10,2)
+);
 
----
+Insert Sample Data:
+------------------
+INSERT INTO orders (customer_name, item, quantity, price)
+VALUES
+('Prajakta', 'Pizza', 2, 499.99),
+('Rahul', 'Burger', 1, 199.50),
+('Sneha', 'Pasta', 3, 349.00),
+('Amit', 'Sandwich', 2, 149.99),
+('Neha', 'Biryani', 1, 299.00);
+Run the Project
 
-### 3️⃣ Create database & table
-
-Run:
-
-```bash
-node createDatabase.js
-```
-
-This will:
-
-* Create database `zomato`
-* Create table `orders`
-* Insert sample data
-
----
-
-### 4️⃣ Start server
-
-```bash
+Development Mode:
+-----------------
+npm start
+or
 node server.js
-```
 
-Server will run on:
-
-```
-http://localhost:8080
-```
-
----
-
-## 📡 API Endpoint
-
-### 🔹 Get Orders
-
-```
+Server starts at:
+-----------------
+http://localhost:5000
+API Endpoints
+Get Orders
+Request
 GET /api/orders
-```
+Pagination Example
+GET /api/orders?limit=5&offset=0
 
----
+Sample Response :
+------------------
+{
+  "success": true,
+  "count": 5,
+  "data": [
+    {
+      "id": 1,
+      "customer_name": "Prajakta",
+      "item": "Pizza",
+      "quantity": 2,
+      "price": "499.99"
+    }
+  ]
+}
 
-## 🔧 Query Parameters
+Query Parameters:
+------------------
+Parameter	Description
+limit	Number of records to fetch
+offset	Starting position of records
 
-| Parameter | Type    | Default | Description                |
-| --------- | ------- | ------- | -------------------------- |
-| limit     | integer | 10      | Number of records to fetch |
-| offset    | integer | 0       | Number of records to skip  |
+Example:
+/api/orders?limit=10&offset=20
 
----
+This fetches 10 records starting from the 21st record.
+Testing API
 
-## 📌 Example Requests
+Using Browser:
+--------------
+http://localhost:5000/api/orders?limit=5&offset=0
 
-### ✅ Default
+Using Live Deployment:
+---------------------
+https://backend-zomato-orders.onrender.com/api/orders?limit=5&offset=0
 
-```
-/api/orders
-```
+Using Postman:
 
-### ✅ With limit
+GET /api/orders?limit=5&offset=0
+Deployment
 
-/api/orders?limit=3
+The project is deployed on: Render
+---------------------------------
 
-### ✅ With offset
+Conclusion :
+------------
+This project demonstrates a backend order management system using Node.js, Express.js, and MySQL. It provides a clean REST API for retrieving order data with pagination support. The application follows a simple and scalable structure, making it a strong foundation for learning backend development, database integration, API design, and cloud deployment. A README should clearly document installation, usage, and project goals because good documentation improves project usability and maintainability.
 
-/api/orders?offset=2
-
-
-### ✅ With both
-
-/api/orders?limit=2&offset=1
-
--------------------------------
-
-## ⚠️ Validation Rules
-
-* Only **positive integers** are allowed for `limit` and `offset`
-* Invalid values (string, float, negative) → fallback to defaults:
-
-  * `limit = 10`
-  * `offset = 0`
-
----------------------------
-
-## 📥 Response Format
-
-```json
-[
-  {
-    "_id": "string",
-    "title": "string",
-    "description": "string"
-  }
-]
-```
-
-------------------------------
-
-## ✅ Acceptance Criteria
-
-* Uses MySQL database
-* Endpoint returns correct paginated data
-* Handles invalid query parameters
-* Response structure remains unchanged
-
-------------------------------
-
-## 🎯 Conclusion
-
-This project demonstrates efficient handling of large datasets using pagination in a real-world backend scenario.
-
----
+Author :
+--------
+Prajakta Bramhe
